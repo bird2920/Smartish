@@ -423,46 +423,46 @@ const Home = ({ onJoin, onCreate, screenName, setScreenName }) => {
     };
 
     return (
-        <div className="w-full max-w-md bg-white p-6 shadow-2xl rounded-xl animate-fade-in-down">
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">TriviaBox </h1>
-            <p className="text-red-600 text-center mb-4 font-semibold">{error}</p>
+        <div className="w-full max-w-md bg-white p-4 sm:p-6 shadow-2xl rounded-xl animate-fade-in-down mx-2">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 sm:mb-6 text-center">TriviaBox</h1>
+            <p className="text-red-600 text-center mb-4 font-semibold text-sm">{error}</p>
 
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Your Screen Name</label>
                 <input
                     type="text"
                     value={screenName}
                     onChange={(e) => setScreenName(e.target.value.substring(0, 15))}
                     placeholder="Enter your name (Max 15 chars)"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 text-base"
                 />
             </div>
 
             <div className="space-y-4">
-                <div className="flex space-x-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                     <input
                         type="text"
                         value={inputCode}
                         onChange={(e) => setInputCode(e.target.value.toUpperCase().substring(0, 4))}
-                        placeholder="4-Letter Code"
+                        placeholder="CODE"
                         maxLength="4"
-                        className="flex-grow p-3 border-4 border-indigo-300 rounded-xl text-center text-xl font-bold tracking-widest uppercase focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full sm:flex-grow p-3 border-4 border-indigo-300 rounded-xl text-center text-xl font-bold tracking-widest uppercase focus:ring-indigo-500 focus:border-indigo-500"
                     />
                     <button
                         onClick={handleJoinClick}
                         disabled={!screenName.trim() || inputCode.length !== 4}
-                        className="w-1/2 p-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full sm:w-auto sm:min-w-[140px] p-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-base"
                     >
                         Join Game
                     </button>
                 </div>
-                <div className="text-center text-gray-500 py-2">
+                <div className="text-center text-gray-500 py-2 text-sm">
                     — OR —
                 </div>
                 <button
                     onClick={handleCreateClick}
                     disabled={!screenName.trim()}
-                    className="w-full p-4 bg-purple-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]"
+                    className="w-full p-4 bg-purple-600 text-white font-bold text-base sm:text-lg rounded-xl shadow-lg hover:bg-purple-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]"
                 >
                     Create New Game (Host)
                 </button>
@@ -607,25 +607,25 @@ const LobbyScreen = ({ db, gameCode, lobbyState, players, userId, isHost }) => {
     const questionCount = lobbyState?.questions?.length || 0;
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-8 flex flex-col items-center">
-            <h2 className="text-5xl font-extrabold text-indigo-400 mb-2 tracking-wide">Lobby: {gameCode}</h2>
-            <p className="text-xl text-gray-300 mb-6">Ask players to join with this code.</p>
+        <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-8 flex flex-col items-center">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-indigo-400 mb-2 tracking-wide text-center px-2">Lobby: {gameCode}</h2>
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-4 sm:mb-6 text-center px-2">Ask players to join with this code.</p>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-6xl">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 w-full max-w-6xl px-2">
                 {/* Host Controls */}
-                <div className={`col-span-1 lg:col-span-1 p-6 rounded-xl shadow-2xl ${isHost ? 'bg-purple-800' : 'bg-gray-800'}`}>
-                    <h3 className="text-2xl font-bold mb-4 border-b pb-2">
+                <div className={`col-span-1 lg:col-span-1 p-4 sm:p-6 rounded-xl shadow-2xl ${isHost ? 'bg-purple-800' : 'bg-gray-800'}`}>
+                    <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 border-b pb-2">
                         {isHost ? 'Host Controls' : 'Waiting for Host...'}
                     </h3>
                     {isHost && (
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                             {/* --- GEMINI QUESTION GENERATOR --- */}
-                            <div className="bg-purple-700 p-4 rounded-lg shadow-inner">
-                                <h4 className="text-xl font-bold mb-2 text-yellow-300">✨ AI Question Generator</h4>
-                                <p className="text-sm text-gray-200 mb-2">Create a game instantly by providing a topic.</p>
+                            <div className="bg-purple-700 p-3 sm:p-4 rounded-lg shadow-inner">
+                                <h4 className="text-lg sm:text-xl font-bold mb-2 text-yellow-300">✨ AI Question Generator</h4>
+                                <p className="text-xs sm:text-sm text-gray-200 mb-2">Create a game instantly by providing a topic.</p>
                                 <input
                                     type="text"
-                                    className="w-full p-2 mb-2 bg-purple-600 border border-purple-500 rounded-lg text-white placeholder-gray-300"
+                                    className="w-full p-2 mb-2 bg-purple-600 border border-purple-500 rounded-lg text-white placeholder-gray-300 text-sm sm:text-base"
                                     placeholder="e.g., US History, 90s Cartoons"
                                     value={generatorTopic}
                                     onChange={(e) => setGeneratorTopic(e.target.value)}
@@ -633,7 +633,7 @@ const LobbyScreen = ({ db, gameCode, lobbyState, players, userId, isHost }) => {
                                 />
                                 <button
                                     onClick={handleGenerateQuestions}
-                                    className="w-full p-2 bg-yellow-500 text-gray-900 font-bold rounded-lg shadow-md hover:bg-yellow-600 transition duration-200 disabled:opacity-50"
+                                    className="w-full p-2 bg-yellow-500 text-gray-900 font-bold rounded-lg shadow-md hover:bg-yellow-600 transition duration-200 disabled:opacity-50 text-sm sm:text-base"
                                     disabled={!generatorTopic.trim() || isGenerating}
                                 >
                                     {isGenerating ? 'Generating 5 Questions...' : 'Generate 5 Questions'}
@@ -641,63 +641,65 @@ const LobbyScreen = ({ db, gameCode, lobbyState, players, userId, isHost }) => {
                             </div>
                             
                             {/* --- CSV UPLOAD (Original Feature) --- */}
-                            <div className="pt-4 border-t border-purple-600">
-                                <h4 className="text-xl font-bold mb-2">Manual CSV Upload</h4>
+                            <div className="pt-3 sm:pt-4 border-t border-purple-600">
+                                <h4 className="text-lg sm:text-xl font-bold mb-2">Manual CSV Upload</h4>
                                 <textarea
-                                    className="w-full h-32 p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-mono text-sm resize-none"
+                                    className="w-full h-28 sm:h-32 p-2 sm:p-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-mono text-xs sm:text-sm resize-none"
                                     placeholder="Paste CSV data here. Format: Question, CorrectAnswer, Option1, Option2..."
                                     value={csvText}
                                     onChange={(e) => setCsvText(e.target.value)}
                                 />
                                 <button
                                     onClick={handleCSVUpload}
-                                    className="w-full p-3 bg-green-500 text-white font-bold rounded-xl shadow-md hover:bg-green-600 transition duration-200 disabled:opacity-50"
+                                    className="w-full p-2 sm:p-3 bg-green-500 text-white font-bold rounded-xl shadow-md hover:bg-green-600 transition duration-200 disabled:opacity-50 text-sm sm:text-base mt-2"
                                     disabled={!csvText.trim()}
                                 >
                                     Upload {csvText.split('\n').filter(l => l.trim()).length} Questions
                                 </button>
                             </div>
                             
-                            {error && <p className="text-red-300 text-sm italic pt-4">{error}</p>}
+                            {error && <p className="text-red-300 text-xs sm:text-sm italic pt-3 sm:pt-4">{error}</p>}
 
-                            <div className="pt-4 border-t border-purple-600 mt-4">
-                                <p className="text-lg font-semibold mb-3">
+                            <div className="pt-3 sm:pt-4 border-t border-purple-600 mt-3 sm:mt-4">
+                                <p className="text-base sm:text-lg font-semibold mb-2 sm:mb-3">
                                     Questions Loaded: <span className="text-yellow-300">{questionCount}</span>
                                 </p>
                                 <button
                                     onClick={handleStartGame}
                                     disabled={questionCount === 0 || players.length < 2}
-                                    className="w-full p-4 bg-red-500 text-white font-extrabold text-lg rounded-xl shadow-xl hover:bg-red-600 transition duration-200 disabled:opacity-50"
+                                    className="w-full p-3 sm:p-4 bg-red-500 text-white font-extrabold text-base sm:text-lg rounded-xl shadow-xl hover:bg-red-600 transition duration-200 disabled:opacity-50"
                                 >
                                     Start Game ({questionCount} Qs)
                                 </button>
-                                {players.length < 2 && <p className="text-sm text-center pt-2 text-yellow-300">Need at least 2 players to start.</p>}
+                                {players.length < 2 && <p className="text-xs sm:text-sm text-center pt-2 text-yellow-300">Need at least 2 players to start.</p>}
                             </div>
                         </div>
                     )}
                 </div>
 
                 {/* Player List */}
-                <div className="col-span-1 lg:col-span-2 p-6 bg-gray-800 rounded-xl shadow-2xl">
-                    <h3 className="text-2xl font-bold mb-4 border-b border-gray-600 pb-2">
+                <div className="col-span-1 lg:col-span-2 p-4 sm:p-6 bg-gray-800 rounded-xl shadow-2xl">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 border-b border-gray-600 pb-2">
                         Players ({players.length})
                     </h3>
                     <div className="max-h-96 overflow-y-auto space-y-2">
                         {players.map(player => (
-                            <div key={player.id} className="flex items-center justify-between bg-gray-700 p-3 rounded-lg shadow-md">
-                                <span className="text-lg font-medium text-gray-50 flex-grow truncate">{player.name}</span>
-                                {player.isHost && <span className="ml-3 text-sm font-semibold text-purple-400">HOST</span>}
-                                {player.id === userId && <span className="ml-3 text-sm font-semibold text-green-400"> (You)</span>}
+                            <div key={player.id} className="flex items-center justify-between bg-gray-700 p-2 sm:p-3 rounded-lg shadow-md">
+                                <span className="text-base sm:text-lg font-medium text-gray-50 flex-grow truncate pr-2">{player.name}</span>
+                                <div className="flex gap-1 sm:gap-2 flex-shrink-0">
+                                    {player.isHost && <span className="text-xs sm:text-sm font-semibold text-purple-400">HOST</span>}
+                                    {player.id === userId && <span className="text-xs sm:text-sm font-semibold text-green-400">(You)</span>}
+                                </div>
                             </div>
                         ))}
                     </div>
                     {isHost && players.length === 1 && (
-                        <p className="text-yellow-400 mt-4 text-center text-lg animate-pulse">Waiting for players to join...</p>
+                        <p className="text-yellow-400 mt-4 text-center text-base sm:text-lg animate-pulse">Waiting for players to join...</p>
                     )}
                 </div>
             </div>
 
-            <p className="mt-8 text-sm text-gray-500">Your User ID: {userId}</p>
+            <p className="mt-6 sm:mt-8 text-xs sm:text-sm text-gray-500 px-2 text-center break-all">Your User ID: {userId}</p>
         </div>
     );
 };
@@ -851,22 +853,22 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
     const nextIndex = lobbyState.currentQuestionIndex + 1;
     
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-8 flex flex-col items-center">
-            <h1 className="text-4xl font-extrabold text-indigo-400 mb-6">Host Screen - Game: {gameCode}</h1>
+        <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-8 flex flex-col items-center">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-indigo-400 mb-4 sm:mb-6 text-center px-2">Host Screen - Game: {gameCode}</h1>
 
             {/* Question Card */}
-            <div className="w-full max-w-4xl bg-gray-800 p-8 rounded-2xl shadow-2xl mb-8">
-                <p className="text-xl font-semibold mb-4 text-center text-gray-400">
+            <div className="w-full max-w-4xl bg-gray-800 p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl mb-6 sm:mb-8">
+                <p className="text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 text-center text-gray-400">
                     Question {lobbyState.currentQuestionIndex + 1} of {totalQuestions}
                 </p>
-                <h2 className="text-3xl font-bold text-center mb-6">{currentQuestion.question}</h2>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-4 sm:mb-6 break-words">{currentQuestion.question}</h2>
 
                 {/* Options and Correct Answer */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                     {currentQuestion.options.map((option, index) => (
                         <div
                             key={index}
-                            className={`p-4 rounded-xl font-bold text-lg transition-all duration-300 ${
+                            className={`p-3 sm:p-4 rounded-xl font-bold text-sm sm:text-base md:text-lg transition-all duration-300 break-words ${
                                 showAnswers && option === currentQuestion.correctAnswer
                                     ? 'bg-green-600 shadow-xl'
                                     : showAnswers && option !== currentQuestion.correctAnswer
@@ -881,15 +883,15 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
             </div>
 
             {/* Answers & Score */}
-            <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-2xl shadow-xl">
-                <h3 className="text-2xl font-bold mb-4 border-b border-gray-600 pb-2">
+            <div className="w-full max-w-4xl bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-xl mb-4">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4 border-b border-gray-600 pb-2">
                     Player Answers ({answersSubmitted} / {activePlayers.length})
                 </h3>
                 <div className="max-h-64 overflow-y-auto space-y-2">
                     {activePlayers.map(player => (
-                        <div key={player.id} className="flex items-center justify-between p-3 rounded-lg shadow-md bg-gray-700">
-                            <span className="text-lg font-medium text-gray-50">{player.name}</span>
-                            <span className={`font-semibold ${
+                        <div key={player.id} className="flex items-center justify-between p-2 sm:p-3 rounded-lg shadow-md bg-gray-700">
+                            <span className="text-sm sm:text-base md:text-lg font-medium text-gray-50 truncate pr-2">{player.name}</span>
+                            <span className={`font-semibold text-xs sm:text-sm md:text-base flex-shrink-0 ${
                                 player.lastAnswer 
                                     ? showAnswers && player.lastAnswer === currentQuestion.correctAnswer 
                                         ? 'text-green-400' 
@@ -905,16 +907,16 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
             
             {/* --- GEMINI EXPLANATION --- */}
             {showAnswers && (
-                <div className="mt-8 w-full max-w-4xl p-6 bg-purple-900 rounded-2xl shadow-inner">
-                    <h3 className="text-xl font-bold mb-3 text-yellow-300">✨ Answer Explanation</h3>
+                <div className="w-full max-w-4xl p-4 sm:p-6 bg-purple-900 rounded-2xl shadow-inner mb-4">
+                    <h3 className="text-lg sm:text-xl font-bold mb-3 text-yellow-300">✨ Answer Explanation</h3>
                     
                     {explanation ? (
-                        <p className="text-lg text-white p-3 bg-purple-800 rounded-lg">{explanation}</p>
+                        <p className="text-sm sm:text-base md:text-lg text-white p-3 bg-purple-800 rounded-lg break-words">{explanation}</p>
                     ) : (
                         <button
                             onClick={handleGenerateExplanation}
                             disabled={isExplaining}
-                            className="w-full p-3 bg-indigo-500 text-white font-bold rounded-xl shadow-md hover:bg-indigo-600 transition duration-200 disabled:opacity-50"
+                            className="w-full p-3 bg-indigo-500 text-white font-bold rounded-xl shadow-md hover:bg-indigo-600 transition duration-200 disabled:opacity-50 text-sm sm:text-base"
                         >
                             {isExplaining ? 'Fetching Fun Fact...' : 'Get Fun Fact/Explanation'}
                         </button>
@@ -923,11 +925,11 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
             )}
 
             {/* Host Actions */}
-            <div className="mt-8 w-full max-w-4xl">
+            <div className="w-full max-w-4xl px-2">
                 {!showAnswers ? (
                     <button
                         onClick={() => setShowAnswers(true)}
-                        className="w-full p-4 bg-yellow-500 text-gray-900 font-extrabold text-xl rounded-xl shadow-2xl hover:bg-yellow-600 transition duration-200 transform hover:scale-[1.01]"
+                        className="w-full p-3 sm:p-4 bg-yellow-500 text-gray-900 font-extrabold text-base sm:text-lg md:text-xl rounded-xl shadow-2xl hover:bg-yellow-600 transition duration-200 transform hover:scale-[1.01]"
                         disabled={isScoring}
                     >
                         {isScoring ? 'Scoring...' : 'Reveal Answers Now'}
@@ -935,7 +937,7 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
                 ) : (
                     <button
                         onClick={handleNextQuestion}
-                        className="w-full p-4 bg-purple-600 text-white font-extrabold text-xl rounded-xl shadow-2xl hover:bg-purple-700 transition duration-200 transform hover:scale-[1.01]"
+                        className="w-full p-3 sm:p-4 bg-purple-600 text-white font-extrabold text-base sm:text-lg md:text-xl rounded-xl shadow-2xl hover:bg-purple-700 transition duration-200 transform hover:scale-[1.01]"
                         disabled={isScoring}
                     >
                         {nextIndex < totalQuestions ? 'Next Question' : 'End Game & Show Results'}
@@ -976,19 +978,19 @@ const PlayerGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, 
     if (!currentQuestion || !player) return null;
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-8 flex flex-col items-center">
-            <h1 className="text-3xl font-extrabold text-green-400 mb-6">{player.name} - Score: {player.score}</h1>
+        <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-8 flex flex-col items-center justify-start">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-green-400 mb-4 sm:mb-6 text-center px-2">{player.name} - Score: {player.score}</h1>
             
             {/* Question Card */}
-            <div className="w-full max-w-2xl bg-gray-800 p-6 rounded-2xl shadow-2xl mb-8">
-                <p className="text-lg font-semibold mb-3 text-center text-gray-400">
+            <div className="w-full max-w-2xl bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-2xl mb-6 sm:mb-8">
+                <p className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 text-center text-gray-400">
                     Question {lobbyState.currentQuestionIndex + 1}
                 </p>
-                <h2 className="text-2xl font-bold text-center">{currentQuestion.question}</h2>
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-center break-words">{currentQuestion.question}</h2>
             </div>
 
             {/* Options */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full max-w-2xl px-2">
                 {currentQuestion.options.map((option, index) => {
                     const isSelected = selectedAnswer === option;
                     
@@ -1009,7 +1011,7 @@ const PlayerGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, 
                             key={index}
                             onClick={() => handleAnswerSubmit(option)}
                             disabled={disabled}
-                            className={`p-4 rounded-xl font-extrabold text-xl text-white transition-all duration-200 shadow-md transform hover:scale-[1.02] disabled:hover:scale-100 ${bgColor}`}
+                            className={`p-3 sm:p-4 rounded-xl font-extrabold text-base sm:text-lg md:text-xl text-white transition-all duration-200 shadow-md transform hover:scale-[1.02] disabled:hover:scale-100 break-words ${bgColor}`}
                         >
                             {option}
                         </button>
@@ -1063,23 +1065,23 @@ const ResultsScreen = ({ db, gameCode, players, isHost, setGameCode, setMode }) 
     // Ensure the player who is not the host returns to home screen if the game doc no longer exists
     
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-8 flex flex-col items-center">
-            <h1 className="text-6xl font-extrabold text-red-500 mb-2">GAME OVER</h1>
-            <h2 className="text-4xl font-semibold text-yellow-400 mb-8">Final Results for {gameCode}</h2>
+        <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-8 flex flex-col items-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-red-500 mb-2 text-center px-2">GAME OVER</h1>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-yellow-400 mb-6 sm:mb-8 text-center px-2">Final Results for {gameCode}</h2>
             
             {/* Leaderboard */}
-            <div className="w-full max-w-xl bg-gray-800 p-6 rounded-2xl shadow-2xl">
-                <h3 className="text-3xl font-bold mb-4 text-center border-b border-gray-600 pb-2">Leaderboard</h3>
-                <div className="space-y-3">
+            <div className="w-full max-w-xl bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-2xl">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 text-center border-b border-gray-600 pb-2">Leaderboard</h3>
+                <div className="space-y-2 sm:space-y-3">
                     {sortedPlayers.map((player, index) => (
-                        <div key={player.id} className={`flex items-center justify-between p-4 rounded-xl shadow-lg transform ${
+                        <div key={player.id} className={`flex items-center justify-between p-3 sm:p-4 rounded-xl shadow-lg transform ${
                             index === 0 ? 'bg-yellow-500 text-gray-900 scale-105 ring-4 ring-yellow-300' : 'bg-gray-700'
                         }`}>
-                            <span className="text-2xl font-black w-1/12">{index + 1}.</span>
-                            <span className={`text-xl font-extrabold flex-grow truncate mx-4 ${index === 0 ? 'text-gray-900' : 'text-white'}`}>
+                            <span className="text-lg sm:text-xl md:text-2xl font-black w-8 sm:w-10 flex-shrink-0">{index + 1}.</span>
+                            <span className={`text-base sm:text-lg md:text-xl font-extrabold flex-grow truncate mx-2 sm:mx-4 ${index === 0 ? 'text-gray-900' : 'text-white'}`}>
                                 {player.name}
                             </span>
-                            <span className={`text-2xl font-black ${index === 0 ? 'text-gray-900' : 'text-indigo-400'}`}>
+                            <span className={`text-base sm:text-lg md:text-2xl font-black flex-shrink-0 ${index === 0 ? 'text-gray-900' : 'text-indigo-400'}`}>
                                 {player.score.toLocaleString()} pts
                             </span>
                         </div>
@@ -1090,12 +1092,12 @@ const ResultsScreen = ({ db, gameCode, players, isHost, setGameCode, setMode }) 
             {isHost ? (
                 <button
                     onClick={handleEndGame}
-                    className="mt-10 p-4 bg-red-600 text-white font-extrabold text-xl rounded-xl shadow-2xl hover:bg-red-700 transition duration-200 transform hover:scale-[1.01]"
+                    className="mt-8 sm:mt-10 p-3 sm:p-4 bg-red-600 text-white font-extrabold text-base sm:text-lg md:text-xl rounded-xl shadow-2xl hover:bg-red-700 transition duration-200 transform hover:scale-[1.01] w-full max-w-md"
                 >
                     End Game and Close Room
                 </button>
             ) : (
-                <p className="mt-10 text-xl font-medium text-gray-400">Waiting for host to close the room...</p>
+                <p className="mt-8 sm:mt-10 text-base sm:text-lg md:text-xl font-medium text-gray-400 text-center px-2">Waiting for host to close the room...</p>
             )}
         </div>
     );
