@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trivia Game</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // Inject globals before bundle loads
+      // TriviaGame.jsx reads these global variables
+      
+      window.__app_id = "my-app";
+      
+      // Your Firebase configuration
+      // Get this from: Firebase Console > Project Settings > Your apps > Web
+      window.__firebase_config = JSON.stringify({
+        apiKey: "AIzaSyCZPIN3MKCBR39XR7LOTtHP-cJSs9UTqxs",
+        authDomain: "smartish-ce919.firebaseapp.com",
+        projectId: "smartish-ce919",
+        storageBucket: "smartish-ce919.firebasestorage.app",
+        messagingSenderId: "698303764031",
+        appId: "1:698303764031:web:b815d90fb9ba36ce080a8a"
+      });
+      
+      // Optional: Custom auth token (usually null for anonymous auth)
+      window.__initial_auth_token = null;
+      
+      // Optional: Gemini API key for AI question generation
+      // Get this from: https://aistudio.google.com/app/apikey
+      window.GEMINI_API_KEY = ""; // Add your key here if you want AI questions
+    </script>
+    <script type="module" src="/main.jsx"></script>
+  </body>
+</html>

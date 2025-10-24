@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Match the game documents
+    match /artifacts/{appId}/public/data/games/{gameCode} {
+      // Anyone can read game state
+      allow read: if true;
+      
+      // Authenticated users can create games
+      allow create: if request.auth != null;
+      
+      // Only the host can update the game
+      allow update: if request.auth != null && 
+                       request.auth.uid == resource.data.hostUserId;
+      
+      // Only the host can delete the game
+      allow delete: if request.auth != null && 
+                       request.auth.uid == resource.data.hostUserId;
+      
+      // Match player subdocuments
+      match /players/{playerId} {
+        // Anyone can read player data
+        allow read: if true;
+        
+        // Users can create their own player document
+        allow create: if request.auth != null && 
+                         request.auth.uid == playerId;
+        
+        // Users can update their own player document
+        // Host can also update any player (for score updates)
+        allow update: if request.auth != null && (
+          request.auth.uid == playerId ||
+          request.auth.uid == get(/databases/$(database)/documents/artifacts/$(appId)/public/data/games/$(gameCode)).data.hostUserId
+        );
+        
+        // Anyone authenticated can delete players (for cleanup)
+        allow delete: if request.auth != null;
+      }
+    }
+  }
+}
