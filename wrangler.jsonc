@@ -1,0 +1,7 @@
+{
+  "name": "smartish-trivia",
+  "compatibility_date": "2025-10-24",
+  "assets": {
+    "directory": "./dist"
+  }
+}
