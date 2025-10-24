@@ -620,7 +620,7 @@ const LobbyScreen = ({ db, gameCode, lobbyState, players, userId, isHost }) => {
                     {isHost && (
                         <div className="space-y-3 sm:space-y-4">
                             {/* --- GEMINI QUESTION GENERATOR --- */}
-                            <div className="bg-purple-700 p-3 sm:p-4 rounded-lg shadow-inner">
+                            {/* <div className="bg-purple-700 p-3 sm:p-4 rounded-lg shadow-inner">
                                 <h4 className="text-lg sm:text-xl font-bold mb-2 text-yellow-300">✨ AI Question Generator</h4>
                                 <p className="text-xs sm:text-sm text-gray-200 mb-2">Create a game instantly by providing a topic.</p>
                                 <input
@@ -638,7 +638,7 @@ const LobbyScreen = ({ db, gameCode, lobbyState, players, userId, isHost }) => {
                                 >
                                     {isGenerating ? 'Generating 5 Questions...' : 'Generate 5 Questions'}
                                 </button>
-                            </div>
+                            </div> */}
                             
                             {/* --- CSV UPLOAD (Original Feature) --- */}
                             <div className="pt-3 sm:pt-4 border-t border-purple-600">
@@ -785,6 +785,7 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
             // Next Question
             try {
                 const gameDocRef = getGameDocPath(db, gameCode);
+                console.log("Firebase app config:", getApp().options);
                 await updateDoc(gameDocRef, {
                     currentQuestionIndex: nextIndex,
                     currentQuestionStartTime: Date.now(),
