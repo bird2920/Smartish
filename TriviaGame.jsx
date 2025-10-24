@@ -906,7 +906,7 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
             </div>
             
             {/* --- GEMINI EXPLANATION --- */}
-            {showAnswers && (
+            {/* {showAnswers && (
                 <div className="w-full max-w-4xl p-4 sm:p-6 bg-purple-900 rounded-2xl shadow-inner mb-4">
                     <h3 className="text-lg sm:text-xl font-bold mb-3 text-yellow-300">✨ Answer Explanation</h3>
                     
@@ -922,7 +922,7 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
                         </button>
                     )}
                 </div>
-            )}
+            )} */}
 
             {/* Host Actions */}
             <div className="w-full max-w-4xl px-2">
