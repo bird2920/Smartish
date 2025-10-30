@@ -398,7 +398,14 @@ const App = () => {
 
 const Home = ({ onJoin, onCreate, screenName, setScreenName, prefilledCode }) => {
     const [inputCode, setInputCode] = useState(prefilledCode || '');
+    const nameInputRef = useRef(null);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        if (nameInputRef.current) {
+            nameInputRef.current.focus();
+        }
+    }, []);
 
     const handleJoinClick = () => {
         if (!screenName.trim()) {
@@ -430,6 +437,7 @@ const Home = ({ onJoin, onCreate, screenName, setScreenName, prefilledCode }) =>
             <div className="mb-4 sm:mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Your Screen Name</label>
                 <input
+                    ref={nameInputRef}
                     type="text"
                     value={screenName}
                     onChange={(e) => setScreenName(e.target.value.substring(0, 15))}
