@@ -693,7 +693,7 @@ const LobbyScreen = ({ db, gameCode, lobbyState, players, userId, isHost }) => {
                                 {players.length < 2 && <p className="text-xs sm:text-sm text-center pt-2 text-yellow-300">Need at least 2 players to start.</p>}
                                 <button
                                     onClick={() => {
-                                        const inviteUrl = `${window.location.origin}/game/${gameCode}`;
+                                        const inviteUrl = `${window.location.origin}/#/game/${gameCode}`;
                                         navigator.clipboard.writeText(inviteUrl).then(() => {
                                             console.log('Invite link copied:', inviteUrl);
                                         }).catch(e => console.error('Failed to copy invite link', e));
