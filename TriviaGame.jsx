@@ -798,7 +798,6 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
             // Next Question
             try {
                 const gameDocRef = getGameDocPath(db, gameCode);
-                console.log("Firebase app config:", getApp().options);
                 await updateDoc(gameDocRef, {
                     currentQuestionIndex: nextIndex,
                     currentQuestionStartTime: Date.now(),
