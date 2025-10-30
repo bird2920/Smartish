@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc, onSnapshot, updateDoc, collection, query, getDoc, getDocs, deleteDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
@@ -205,7 +206,8 @@ const useFirebase = () => {
 // --- Game Logic and Components ---
 
 /** Main App Component */
-const App = () => {
+const App = ({ prefillFromRoute }) => {
+    const params = prefillFromRoute ? useParams() : {};
     const { db, userId, isLoading } = useFirebase();
     const [gameCode, setGameCode] = useState('');
     const [lobbyState, setLobbyState] = useState(null); // Game document state
@@ -330,10 +332,19 @@ const App = () => {
         return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white"><p>Loading Firebase...</p></div>;
     }
 
+    // If route has code param and we're still at HOME with no gameCode set, prefill into Home component
+    const routePrefilledCode = prefillFromRoute && params?.code ? params.code.toUpperCase().substring(0,4) : null;
+
     if (mode === 'HOME' || !userId) {
         return (
             <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-                <Home onJoin={handleJoinGame} onCreate={handleCreateGame} screenName={screenName} setScreenName={setScreenName} />
+                <Home
+                    onJoin={handleJoinGame}
+                    onCreate={handleCreateGame}
+                    screenName={screenName}
+                    setScreenName={setScreenName}
+                    prefilledCode={routePrefilledCode}
+                />
             </div>
         );
     }
