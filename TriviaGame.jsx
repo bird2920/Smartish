@@ -396,8 +396,8 @@ const App = () => {
 
 // --- Sub-Components ---
 
-const Home = ({ onJoin, onCreate, screenName, setScreenName }) => {
-    const [inputCode, setInputCode] = useState('');
+const Home = ({ onJoin, onCreate, screenName, setScreenName, prefilledCode }) => {
+    const [inputCode, setInputCode] = useState(prefilledCode || '');
     const [error, setError] = useState('');
 
     const handleJoinClick = () => {
@@ -443,10 +443,11 @@ const Home = ({ onJoin, onCreate, screenName, setScreenName }) => {
                     <input
                         type="text"
                         value={inputCode}
-                        onChange={(e) => setInputCode(e.target.value.toUpperCase().substring(0, 4))}
+                        onChange={(e) => !prefilledCode && setInputCode(e.target.value.toUpperCase().substring(0, 4))}
                         placeholder="CODE"
                         maxLength="4"
-                        className="w-full sm:flex-grow p-3 border-4 border-indigo-300 rounded-xl text-center text-xl font-bold tracking-widest uppercase focus:ring-indigo-500 focus:border-indigo-500"
+                        disabled={!!prefilledCode}
+                        className={`w-full sm:flex-grow p-3 border-4 rounded-xl text-center text-xl font-bold tracking-widest uppercase focus:ring-indigo-500 focus:border-indigo-500 ${prefilledCode ? 'bg-gray-200 border-green-400 text-green-700 cursor-not-allowed' : 'border-indigo-300'}`}
                     />
                     <button
                         onClick={handleJoinClick}
@@ -671,6 +672,17 @@ const LobbyScreen = ({ db, gameCode, lobbyState, players, userId, isHost }) => {
                                     Start Game ({questionCount} Qs)
                                 </button>
                                 {players.length < 2 && <p className="text-xs sm:text-sm text-center pt-2 text-yellow-300">Need at least 2 players to start.</p>}
+                                <button
+                                    onClick={() => {
+                                        const inviteUrl = `${window.location.origin}/game/${gameCode}`;
+                                        navigator.clipboard.writeText(inviteUrl).then(() => {
+                                            console.log('Invite link copied:', inviteUrl);
+                                        }).catch(e => console.error('Failed to copy invite link', e));
+                                    }}
+                                    className="mt-3 w-full p-3 sm:p-4 bg-yellow-500 text-gray-900 font-bold rounded-xl shadow-md hover:bg-yellow-400 transition duration-200 text-sm sm:text-base"
+                                >
+                                    Copy Invite Link
+                                </button>
                             </div>
                         </div>
                     )}

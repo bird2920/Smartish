@@ -9,6 +9,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/game" element={<TriviaGame />} />
+                <Route path="/game/:code" element={<TriviaGame prefillFromRoute={true} />} />
             </Routes>
         </Router>
     );
