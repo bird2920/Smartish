@@ -502,10 +502,9 @@ const LobbyScreen = ({ db, gameCode, lobbyState, players, userId, isHost }) => {
             // Reset player answers for the start
             const playersColRef = getPlayersCollectionPath(db, gameCode);
             const playerDocs = await getDocs(playersColRef);
-            console.log('📋 Resetting', playerDocs.docs.length, 'players');
             
             const updatePromises = playerDocs.docs.map(docSnap =>
-                updateDoc(docSnap.ref, { lastAnswer: null, score: 0 })
+                updateDoc(docSnap.ref, { lastAnswer: null, score: 0, answerTimestamp: null })
             );
             await Promise.all(updatePromises);
 
@@ -718,13 +717,13 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
     const allAnswered = answersSubmitted === activePlayers.length;
 
     useEffect(() => {
-        // Automatically show answers 10 seconds after question starts, or when all players submit
+        // Automatically show answers 30 seconds after question starts, or when all players submit
         if (lobbyState?.status === 'PLAYING' && lobbyState.currentQuestionStartTime) {
             const timer = setTimeout(() => {
                 if (!showAnswers && !isScoring) {
                     setShowAnswers(true);
                 }
-            }, 10000); // 10 seconds timeout
+            }, 30000); // 30 seconds timeout
 
             if (allAnswered && !showAnswers && !isScoring) {
                  setShowAnswers(true);
@@ -743,13 +742,26 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
         
         // Capture the player list NOW (not reactive)
         const playersToScore = players.filter(p => !p.isHost);
+        const questionStartTime = lobbyState.currentQuestionStartTime;
         
         const scoreUpdates = playersToScore.map(player => {
             const playerDocRef = getPlayerDocPath(db, gameCode, player.id);
             let scoreIncrease = 0;
             
-            // Basic scoring: 1000 points for the correct answer
-            if (player.lastAnswer === currentQuestion.correctAnswer) {
+            // Time-based scoring: 1000 points max, decreases over 30 seconds
+            if (player.lastAnswer === currentQuestion.correctAnswer && player.answerTimestamp) {
+                const responseTime = player.answerTimestamp - questionStartTime; // milliseconds
+                const responseTimeSeconds = responseTime / 1000;
+                
+                // Calculate score: 1000 points for instant answer, decreasing to 500 points at 30 seconds
+                // Formula: 1000 - (500 * (time/30))
+                const timePenalty = Math.min(responseTimeSeconds / 30, 1); // Cap at 1 (30 seconds)
+                scoreIncrease = Math.round(1000 - (500 * timePenalty));
+                scoreIncrease = Math.max(scoreIncrease, 500); // Minimum 500 points for correct answer
+                
+                console.log(`✅ ${player.name} answered correctly in ${responseTimeSeconds.toFixed(2)}s! +${scoreIncrease}`);
+            } else if (player.lastAnswer === currentQuestion.correctAnswer) {
+                // Fallback if timestamp missing
                 scoreIncrease = 1000;
                 console.log(`✅ ${player.name} answered correctly! +${scoreIncrease}`);
             } else {
@@ -768,10 +780,11 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
         Promise.all(scoreUpdates)
             .then(() => {
                 console.log('✅ Scoring complete');
-                // Don't reset isScoring here - let it stay true until next question
+                setIsScoring(false); // Re-enable the 'Next' button
             })
             .catch(e => {
                 console.error("Error scoring:", e);
+                setIsScoring(false); // Also re-enable on error
             });
             
     }, [db, gameCode, currentQuestion?.id, showAnswers]); // Use question id instead of object
@@ -795,7 +808,7 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
                 const playersColRef = getPlayersCollectionPath(db, gameCode);
                 const playerDocs = await getDocs(playersColRef);
                 const updatePromises = playerDocs.docs.map(docSnap =>
-                    updateDoc(docSnap.ref, { lastAnswer: null })
+                    updateDoc(docSnap.ref, { lastAnswer: null, answerTimestamp: null })
                 );
                 await Promise.all(updatePromises);
                 
@@ -952,6 +965,7 @@ const HostGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, us
 const PlayerGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, userId }) => {
     const player = players.find(p => p.id === userId);
     const [selectedAnswer, setSelectedAnswer] = useState(player?.lastAnswer || null);
+    const [timeRemaining, setTimeRemaining] = useState(30);
     
     // Check for question change to reset answer state
     useEffect(() => {
@@ -960,6 +974,23 @@ const PlayerGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, 
             setSelectedAnswer(null); 
         }
     }, [lobbyState?.currentQuestionIndex, player]);
+    
+    // Countdown timer
+    useEffect(() => {
+        if (!lobbyState?.currentQuestionStartTime) return;
+        
+        const startTime = lobbyState.currentQuestionStartTime;
+        const updateTimer = () => {
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(0, 30 - Math.floor(elapsed / 1000));
+            setTimeRemaining(remaining);
+        };
+        
+        updateTimer(); // Update immediately
+        const interval = setInterval(updateTimer, 100); // Update every 100ms for smooth countdown
+        
+        return () => clearInterval(interval);
+    }, [lobbyState?.currentQuestionStartTime, lobbyState?.currentQuestionIndex]);
 
     const handleAnswerSubmit = useCallback(async (answer) => {
         if (!db || !gameCode || !player || player.lastAnswer) return;
@@ -968,6 +999,7 @@ const PlayerGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, 
         try {
             await updateDoc(playerDocRef, {
                 lastAnswer: answer,
+                answerTimestamp: Date.now(), // Record when the answer was submitted
             });
             setSelectedAnswer(answer);
         } catch (e) {
@@ -981,6 +1013,11 @@ const PlayerGameScreen = ({ db, gameCode, lobbyState, players, currentQuestion, 
     return (
         <div className="min-h-screen bg-gray-900 text-white p-3 sm:p-4 md:p-8 flex flex-col items-center justify-start">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-green-400 mb-4 sm:mb-6 text-center px-2">{player.name} - Score: {player.score}</h1>
+            
+            {/* Timer */}
+            <div className={`text-4xl sm:text-5xl font-black mb-4 sm:mb-6 ${timeRemaining <= 10 ? 'text-red-500 animate-pulse' : 'text-yellow-400'}`}>
+                {timeRemaining}s
+            </div>
             
             {/* Question Card */}
             <div className="w-full max-w-2xl bg-gray-800 p-4 sm:p-6 rounded-2xl shadow-2xl mb-6 sm:mb-8">

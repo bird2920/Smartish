@@ -6,7 +6,8 @@
     "@tailwindcss/postcss": "^4.1.16",
     "firebase": "^10.12.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.9.5"
   },
   "scripts": {
     "dev": "vite",
