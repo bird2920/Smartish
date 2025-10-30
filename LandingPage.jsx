@@ -13,7 +13,7 @@ const LandingPage = () => {
                         Smartish
                     </h1>
                     <p className="text-2xl sm:text-3xl text-indigo-200 font-semibold">
-                        The Jackbox-Style Trivia Game
+                        Jackbox-Style Multiplayer Fun
                     </p>
                 </div>
 
@@ -21,7 +21,7 @@ const LandingPage = () => {
                 <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 sm:p-12 shadow-2xl border border-white/20">
                     <div className="space-y-6 text-white">
                         <p className="text-lg sm:text-xl leading-relaxed">
-                            Host multiplayer trivia games with your friends! One person hosts, 
+                            Host multiplayer parties with your friends! One person hosts, 
                             everyone else joins with a simple code, and compete in real-time 
                             on your own devices.
                         </p>

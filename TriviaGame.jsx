@@ -424,7 +424,7 @@ const Home = ({ onJoin, onCreate, screenName, setScreenName }) => {
 
     return (
         <div className="w-full max-w-md bg-white p-4 sm:p-6 shadow-2xl rounded-xl animate-fade-in-down mx-2">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 sm:mb-6 text-center">TriviaBox</h1>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 sm:mb-6 text-center">Smartish</h1>
             <p className="text-red-600 text-center mb-4 font-semibold text-sm">{error}</p>
 
             <div className="mb-4 sm:mb-6">

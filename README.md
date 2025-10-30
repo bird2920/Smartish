@@ -1,6 +1,6 @@
-# 🎮 TriviaBox - Real-time Multiplayer Trivia Game
+# 🎮 Smartish - Real-time Multiplayer Trivia Game
 
-A Jackbox-style trivia game with real-time synchronization, built with React and Firebase.
+A Jackbox-style multiplayer game with real-time synchronization, built with React and Firebase.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Firebase](https://img.shields.io/badge/firebase-10.12-orange.svg)
