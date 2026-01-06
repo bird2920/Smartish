@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   getGameDocPath,
   getPlayersCollectionPath,
+  getPlayerDocPath,
 } from "../helpers/firebasePaths";
 import { getDocs, deleteDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { persistGameStats } from "../helpers/userStats";
@@ -80,19 +81,18 @@ export default function ResultsScreen({
 
     try {
       // Reset all player scores and answers
-      const playersColRef = getPlayersCollectionPath(db, gameCode);
-      const playerDocs = await getDocs(playersColRef);
-      if (!playerDocs.empty) {
+      if (players.length > 0) {
         const batch = writeBatch(db);
-        playerDocs.docs.forEach((docSnap) =>
-          batch.update(docSnap.ref, {
+        players.forEach((player) => {
+          const playerDocRef = getPlayerDocPath(db, gameCode, player.id);
+          batch.update(playerDocRef, {
             score: 0,
             lastAnswer: null,
             answerTimestamp: null,
             correctCount: 0,
             answeredCount: 0,
-          })
-        );
+          });
+        });
         await batch.commit();
       }
 

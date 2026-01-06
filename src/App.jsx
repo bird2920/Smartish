@@ -101,6 +101,11 @@ function TriviaGame({ prefillFromRoute }) {
     setAuthModalMode((prev) => (prev === "signup" ? "signin" : "signup"));
   }, []);
 
+  // 📜 Reset scroll position on screen transitions
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [mode, lobbyState?.status]);
+
   // 🕹️ Render Control
   if (isLoading) {
     return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { getGameDocPath, getPlayersCollectionPath } from "../helpers/firebasePaths";
+import { getGameDocPath, getPlayersCollectionPath, getPlayerDocPath } from "../helpers/firebasePaths";
 import { updateDoc, getDocs, writeBatch } from "firebase/firestore";
 import { calculateScoreUpdates } from "../helpers/scoringUtils";
 import { achievementBus } from "../services/achievements";
@@ -84,17 +84,9 @@ export default function HostGameScreen({ db, gameCode, lobbyState, players, curr
 
     // Calculate scores for correct answers & increment stats
     try {
-      const playersColRef = getPlayersCollectionPath(db, gameCode);
-      const playerDocs = await getDocs(playersColRef);
-      if (!playerDocs.empty) {
-        const playerRefMap = new Map();
-        const playerData = playerDocs.docs.map((docSnap) => {
-          playerRefMap.set(docSnap.id, docSnap.ref);
-          return { id: docSnap.id, ...docSnap.data() };
-        });
-
+      if (players.length > 0) {
         const scoreUpdates = calculateScoreUpdates({
-          players: playerData,
+          players,
           correctAnswer: currentQuestion.correctAnswer,
           questionStartTime: lobbyState?.currentQuestionStartTime,
         });
@@ -102,10 +94,8 @@ export default function HostGameScreen({ db, gameCode, lobbyState, players, curr
         if (scoreUpdates.length) {
           const batch = writeBatch(db);
           scoreUpdates.forEach(({ id, updates }) => {
-            const ref = playerRefMap.get(id);
-            if (ref) {
-              batch.update(ref, updates);
-            }
+            const playerDocRef = getPlayerDocPath(db, gameCode, id);
+            batch.update(playerDocRef, updates);
           });
           await batch.commit();
         }
@@ -113,7 +103,7 @@ export default function HostGameScreen({ db, gameCode, lobbyState, players, curr
     } catch (err) {
       console.error("❌ Error calculating scores:", err);
     }
-  }, [db, gameCode, currentQuestion, lobbyState]);
+  }, [db, gameCode, currentQuestion, lobbyState, players]);
 
   // ⏱️ Auto-reveal when timer expires (auto-host)
   useEffect(() => {
@@ -130,16 +120,15 @@ export default function HostGameScreen({ db, gameCode, lobbyState, players, curr
       const gameDocRef = getGameDocPath(db, gameCode);
 
       // Reset player answers
-      const playersColRef = getPlayersCollectionPath(db, gameCode);
-      const playerDocs = await getDocs(playersColRef);
-      if (!playerDocs.empty) {
+      if (players.length > 0) {
         const batch = writeBatch(db);
-        playerDocs.docs.forEach((docSnap) =>
-          batch.update(docSnap.ref, {
+        players.forEach((player) => {
+          const playerDocRef = getPlayerDocPath(db, gameCode, player.id);
+          batch.update(playerDocRef, {
             lastAnswer: null,
             answerTimestamp: null,
-          })
-        );
+          });
+        });
         await batch.commit();
       }
 
@@ -172,26 +161,30 @@ export default function HostGameScreen({ db, gameCode, lobbyState, players, curr
         userId: player.id,
         score: player.score ?? 0,
       }));
-      const rankByUser = new Map();
-      [...playersForEvent]
-        .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-        .forEach((entry, index) => {
-          rankByUser.set(entry.userId, index + 1);
-        });
 
-      playersForEvent.forEach((playerEntry) => {
-        achievementBus.emit({
-          type: "GAME_FINISHED",
-          data: {
-            userId: playerEntry.userId,
-            gameId: gameCode,
-            finalScore: playerEntry.score,
-            players: playersForEvent,
-            hostUserId: lobbyState?.hostUserId,
-            finalRank: rankByUser.get(playerEntry.userId),
-          },
+      // 🔥 Performance: Defer achievement emissions to avoid blocking the UI transition
+      setTimeout(() => {
+        const rankByUser = new Map();
+        [...playersForEvent]
+          .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+          .forEach((entry, index) => {
+            rankByUser.set(entry.userId, index + 1);
+          });
+
+        playersForEvent.forEach((playerEntry) => {
+          achievementBus.emit({
+            type: "GAME_FINISHED",
+            data: {
+              userId: playerEntry.userId,
+              gameId: gameCode,
+              finalScore: playerEntry.score,
+              players: playersForEvent,
+              hostUserId: lobbyState?.hostUserId,
+              finalRank: rankByUser.get(playerEntry.userId),
+            },
+          });
         });
-      });
+      }, 0);
     } catch (err) {
       console.error("❌ Error ending game:", err);
     }
@@ -206,19 +199,18 @@ export default function HostGameScreen({ db, gameCode, lobbyState, players, curr
     if (!confirmed) return;
 
     try {
-      const playersColRef = getPlayersCollectionPath(db, gameCode);
-      const playerDocs = await getDocs(playersColRef);
-      if (!playerDocs.empty) {
+      if (players.length > 0) {
         const batch = writeBatch(db);
-        playerDocs.docs.forEach((docSnap) =>
-          batch.update(docSnap.ref, {
+        players.forEach((player) => {
+          const playerDocRef = getPlayerDocPath(db, gameCode, player.id);
+          batch.update(playerDocRef, {
             score: 0,
             lastAnswer: null,
             answerTimestamp: null,
             correctCount: 0,
             answeredCount: 0,
-          })
-        );
+          });
+        });
         await batch.commit();
       }
 
@@ -326,7 +318,7 @@ export default function HostGameScreen({ db, gameCode, lobbyState, players, curr
 
       {/* Question */}
       <div className="w-full max-w-4xl bg-white/5 backdrop-blur-xl p-8 rounded-2xl border border-white/10 shadow-2xl shadow-indigo-950/40 mb-6">
-        <h2 className="text-3xl font-bold mb-6 text-center break-words">
+        <h2 className="text-2xl font-bold mb-6 text-center break-words">
           {currentQuestion.question}
         </h2>
 
@@ -345,7 +337,8 @@ export default function HostGameScreen({ db, gameCode, lobbyState, players, curr
             return (
               <div
                 key={i}
-                className={`p-4 rounded-xl font-bold text-lg ${bgColor} text-white text-center`}
+                className={`p-3 rounded-xl font-bold text-base ${bgColor} text-white text-center ${!revealed && isCorrect ? "ring-2 ring-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)] opacity-90" : ""
+                  }`}
               >
                 {option}
                 {revealed && isCorrect && " ✅"}
