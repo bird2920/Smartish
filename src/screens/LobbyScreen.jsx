@@ -125,6 +125,7 @@ export default function LobbyScreen({
   const [isSeedingMocks, setIsSeedingMocks] = useState(false);
   // Ref for auto-scrolling/focusing the QuestionsEditor after questions load
   const editorRef = useRef(null);
+  const toolsRef = useRef(null);
   const copyTimeoutRef = useRef(null);
 
   const questionCount = lobbyState?.questions?.length || 0;
@@ -567,44 +568,50 @@ export default function LobbyScreen({
           <div className="space-y-6">
             {isHost ? (
               <>
-                <div className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 space-y-4 shadow-2xl shadow-indigo-950/40">
+                <div className="rounded-2xl border border-white/10 bg-indigo-500/5 backdrop-blur-xl p-6 space-y-5 shadow-2xl shadow-indigo-950/40">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Share + Spectate</p>
-                      <h4 className="text-2xl font-semibold mt-1">Invite players first</h4>
-                      <p className="text-sm text-slate-300">
-                        Share the link and launch TV mode before you dive into questions.
-                      </p>
+                      <p className="text-[10px] uppercase tracking-[0.4em] text-indigo-300/80 font-bold">Invite & Spectate</p>
+                      <h4 className="text-xl font-bold mt-1 text-white">Bring the crowd</h4>
                     </div>
                   </div>
+
                   <CopyInviteButton gameCode={gameCode} />
-                  <div className="pt-2">
+
+                  <div className="space-y-3">
                     <button
                       onClick={() => window.open(`/#/spectator/${gameCode}`, "_blank")}
-                      className="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-indigo-400/20 bg-indigo-500/5 px-4 py-3 font-bold text-indigo-200 transition hover:bg-indigo-500/10 hover:border-indigo-400/40"
+                      className="w-full flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 font-bold text-indigo-100 transition hover:bg-white/10 hover:border-white/20 text-sm"
                     >
-                      <span className="text-xl">📺</span> Launch TV Mode (QR)
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+                        <rect width="20" height="15" x="2" y="7" rx="2" ry="2" />
+                        <path d="M17 2l-5 5-5-5" />
+                      </svg>
+                      Launch TV Mode (QR)
                     </button>
-                    <p className="text-center text-xs text-slate-500 mt-2">
+                    <p className="text-center text-[11px] text-slate-400">
                       Opens the spectator screen with the QR code.
                     </p>
                   </div>
                 </div>
-                <div className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl shadow-2xl shadow-indigo-950/40">
+                <div
+                  ref={toolsRef}
+                  className="rounded-2xl border border-white/10 bg-indigo-500/5 backdrop-blur-xl shadow-2xl shadow-indigo-950/40"
+                >
                   <div className="p-6 space-y-6">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <p className="text-xs uppercase tracking-[0.35em] text-yellow-200/80 flex items-center gap-2">
+                        <p className="text-[10px] uppercase tracking-[0.4em] text-indigo-300/80 font-bold flex items-center gap-2">
                           <span role="img" aria-label="sparkles">✨</span>
                           Question Tools
                         </p>
-                        <h3 className="text-2xl font-bold mt-2">Generate questions first</h3>
-                        <p className="text-sm text-slate-300">
-                          AI is the fastest way. Swap tabs if you need a CSV drop-in instead.
+                        <h3 className="text-xl font-bold mt-1 text-white">Load some questions</h3>
+                        <p className="text-sm text-indigo-100/70">
+                          Fastest with AI, or paste your own CSV.
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[11px] uppercase tracking-[0.3em] text-slate-400">Loaded</p>
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-indigo-300/60 font-bold">Loaded</p>
                         <p className="text-lg font-bold text-yellow-200">
                           {questionCount} {questionCount === 1 ? "question" : "questions"}
                         </p>
@@ -621,8 +628,8 @@ export default function LobbyScreen({
                           type="button"
                           onClick={() => setQuestionTab(tab.id)}
                           className={`flex-1 rounded-full px-3 py-1.5 font-semibold transition ${questionTab === tab.id
-                              ? "bg-slate-900 text-amber-100 shadow-sm shadow-black/40"
-                              : "text-purple-100/80 hover:bg-white/10"
+                            ? "bg-slate-900 text-amber-100 shadow-sm shadow-black/40"
+                            : "text-purple-100/80 hover:bg-white/10"
                             }`}
                         >
                           {tab.label}
@@ -631,16 +638,16 @@ export default function LobbyScreen({
                     </div>
 
                     {questionTab === "ai" && (
-                      <div className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl shadow-2xl shadow-purple-900/30">
+                      <div className="rounded-2xl border border-white/10 bg-indigo-500/5 backdrop-blur-xl shadow-2xl shadow-indigo-950/20">
                         <div className="p-6 space-y-4">
                           <div>
-                            <p className="text-xs uppercase tracking-[0.35em] text-yellow-200/80 flex items-center gap-2">
+                            <p className="text-[10px] uppercase tracking-[0.3em] text-indigo-300/80 font-bold flex items-center gap-2">
                               <span role="img" aria-label="sparkles">✨</span>
-                              AI Question Generator
+                              AI Generator
                             </p>
-                            <h3 className="text-2xl font-bold mt-2">Create themed questions</h3>
-                            <p className="text-sm text-purple-100/70">
-                              Drop a theme and pick how many questions to spin up (max 50).
+                            <h3 className="text-lg font-bold mt-1 text-white">Pick a theme</h3>
+                            <p className="text-sm text-indigo-100/70">
+                              Choose a topic and question count.
                             </p>
                           </div>
                           {aiEnabled ? (
@@ -730,17 +737,17 @@ export default function LobbyScreen({
                     )}
 
                     {questionTab === "csv" && (
-                      <div className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl shadow-2xl shadow-purple-900/30">
+                      <div className="rounded-2xl border border-white/10 bg-indigo-500/5 backdrop-blur-xl shadow-2xl shadow-indigo-950/20">
                         <div className="p-6 space-y-3">
                           <div className="flex items-start justify-between gap-3">
                             <div>
-                              <p className="text-xs uppercase tracking-[0.35em] text-blue-200/80 flex items-center gap-2">
+                              <p className="text-[10px] uppercase tracking-[0.3em] text-indigo-300/80 font-bold flex items-center gap-2">
                                 <span role="img" aria-label="clipboard">📋</span>
-                                Manual Questions
+                                CSV Manual Entry
                               </p>
-                              <h3 className="text-2xl font-bold mt-2">Paste CSV rows</h3>
-                              <p className="text-sm text-purple-100/70">
-                                Format: Question, Answer, Option1, Option2, Option3.
+                              <h3 className="text-lg font-bold mt-1 text-white">Paste your rows</h3>
+                              <p className="text-sm text-indigo-100/70">
+                                Question, Answer, Opt1, Opt2, Opt3
                               </p>
                             </div>
                           </div>
@@ -802,10 +809,10 @@ export default function LobbyScreen({
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl p-6 space-y-4 shadow-2xl shadow-purple-900/40">
+                <div className="rounded-2xl border border-white/10 bg-indigo-500/5 backdrop-blur-xl p-6 space-y-4 shadow-2xl shadow-indigo-950/40">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.35em] text-purple-200/80">Start</p>
-                    <h4 className="text-2xl font-semibold mt-1">Ready to play?</h4>
+                    <p className="text-[10px] uppercase tracking-[0.4em] text-indigo-300/80 font-bold">Start</p>
+                    <h4 className="text-xl font-bold mt-1 text-white">Ready to play?</h4>
                     <p className="text-sm text-purple-100/70">
                       {questionCount > 0
                         ? `You have ${questionCount} question${questionCount === 1 ? "" : "s"} loaded.`
@@ -871,14 +878,14 @@ export default function LobbyScreen({
                 </div>
 
                 {/* Host Settings */}
-                <div className="rounded-2xl border border-white/15 bg-white/5 backdrop-blur-xl shadow-2xl shadow-purple-900/30">
+                <div className="rounded-2xl border border-white/10 bg-indigo-500/5 backdrop-blur-xl shadow-2xl shadow-indigo-950/30">
                   <div className="p-6 space-y-4">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.35em] text-emerald-200/80 flex items-center gap-2">
+                      <p className="text-[10px] uppercase tracking-[0.4em] text-emerald-300/80 font-bold flex items-center gap-2">
                         <span role="img" aria-label="gear">⚙️</span>
                         Game Settings
                       </p>
-                      <h3 className="text-2xl font-bold mt-2">Host Controls</h3>
+                      <h3 className="text-xl font-bold mt-1 text-white">Host Controls</h3>
                     </div>
 
                     <div className="space-y-4">
@@ -1112,6 +1119,7 @@ export default function LobbyScreen({
                             onClick={() => {
                               setGeneratorTopic(suggestion);
                               void handleGenerateQuestions(suggestion, generatorCount);
+                              toolsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                             }}
                             className="mt-2 text-xs font-semibold text-yellow-200 hover:text-yellow-100"
                           >
@@ -1189,34 +1197,43 @@ function CopyInviteButton({ gameCode }) {
   }, [canShare, gameCode, inviteUrl]);
 
   return (
-    <div className="relative w-full mt-3">
-      <div className="flex flex-col gap-2 sm:flex-row">
+    <div className="relative w-full">
+      <div className="flex gap-3">
         <button
           onClick={handleCopy}
-          className="w-full sm:w-auto flex-1 p-3 bg-yellow-500 text-gray-900 font-bold rounded-xl hover:bg-yellow-400 transition"
+          className="flex-1 flex items-center justify-center gap-2 p-3 bg-indigo-500/20 border border-indigo-400/30 text-indigo-100 font-bold rounded-xl hover:bg-indigo-500/30 transition text-sm sm:text-base"
         >
-          Copy Invite Link
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          Copy Link
         </button>
         {canShare && (
           <button
             onClick={handleShare}
-            className="w-full sm:w-auto flex-1 p-3 bg-blue-500 text-white font-bold rounded-xl hover:bg-blue-600 transition"
+            className="flex-1 flex items-center justify-center gap-2 p-3 bg-indigo-500/20 border border-indigo-400/30 text-indigo-100 font-bold rounded-xl hover:bg-indigo-500/30 transition text-sm sm:text-base"
           >
-            Share Invite
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+            Share
           </button>
         )}
       </div>
       {copied && (
         <div
-          className="absolute inset-x-0 mx-auto mt-2 w-max px-4 py-1 rounded-lg bg-green-600 text-white text-sm font-semibold shadow-lg animate-fadeInOut"
+          className="absolute inset-x-0 mx-auto -top-10 w-max px-4 py-1 rounded-lg bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-950/40 animate-fadeInOut z-50"
           style={{
-            top: "100%",
             pointerEvents: "none",
-            transition: "opacity 0.5s",
           }}
         >
           <span role="img" aria-label="copied" className="mr-1">✅</span>
-          Copied!
+          Copied to clipboard!
         </div>
       )}
       <style>
