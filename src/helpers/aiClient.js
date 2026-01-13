@@ -6,7 +6,7 @@ const MAX_QUESTIONS = 50;
 const MIN_QUESTIONS = 1;
 
 const buildSystemPrompt = (count) =>
-  `Make ${count} trivia Qs with 1 correct and 3 wrong. Keep answers concise (under 60 chars) and avoid commentary or parentheses. Return JSON [{question,correctAnswer,distractor1,distractor2,distractor3}]`;
+  `Make ${count} trivia Qs with 1 correct and 3 wrong. Keep answers concise (under 60 chars) and avoid commentary or parentheses. Avoid using the answer in the question. Return JSON [{question,correctAnswer,distractor1,distractor2,distractor3}]`;
 
 const getProxyUrl = () => {
   const env = typeof import.meta !== "undefined" && import.meta.env ? import.meta.env : {};
