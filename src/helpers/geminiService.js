@@ -1,5 +1,5 @@
 const GEMINI_API_URL_BASE = "https://generativelanguage.googleapis.com/v1beta/models/";
-const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
+const MODEL_NAME = "gemini-2.5-flash";
 const ENV = typeof import.meta !== "undefined" && import.meta.env ? import.meta.env : {};
 const RUNTIME_KEY =
   (typeof window !== "undefined" && window.GEMINI_API_KEY) ||
