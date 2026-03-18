@@ -5,7 +5,7 @@ import { signOut } from "firebase/auth";
 // 🔧 Helper Imports
 import { useFirebase } from "./helpers/useFirebase";
 import { useGameLogic } from "./hooks/useGameLogic";
-import { useHackerNewsNotice } from "./hooks/useHackerNewsNotice";
+import { useReferralNotice } from "./hooks/useReferralNotice";
 
 // 🎨 Pages
 import LandingPage from "../LandingPage";
@@ -19,7 +19,7 @@ import ResultsScreen from "./screens/ResultsScreen";
 import SpectatorScreen from "./screens/SpectatorScreen";
 import AboutPage from "./screens/AboutPage";
 import AccountModal from "./components/AccountModal";
-import HackerNewsModal from "./components/HackerNewsModal";
+import ReferralModal from "./components/ReferralModal";
 import { achievementBus, getAchievementService } from "./services/achievements";
 
 getAchievementService();
@@ -68,7 +68,7 @@ function TriviaGame({ prefillFromRoute }) {
   const isOnHomeOrLobby =
     mode === "HOME" || lobbyState?.status === "LOBBY" || lobbyState?.status === "UPLOAD";
 
-  const { shouldShow: shouldShowHNModal, dismiss: dismissHNModal } = useHackerNewsNotice({
+  const { source: referralSource, shouldShow: shouldShowReferralModal, dismiss: dismissReferralModal } = useReferralNotice({
     canShow: isOnHomeOrLobby && !isLoading,
   });
 
@@ -207,7 +207,11 @@ function TriviaGame({ prefillFromRoute }) {
         onSuccess={handleAuthSuccess}
         onSwitchMode={handleSwitchAuthMode}
       />
-      <HackerNewsModal isOpen={shouldShowHNModal && isOnHomeOrLobby} onClose={dismissHNModal} />
+      <ReferralModal
+        isOpen={shouldShowReferralModal && isOnHomeOrLobby}
+        onClose={dismissReferralModal}
+        source={referralSource}
+      />
     </>
   );
 }

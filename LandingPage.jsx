@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QuackKingLogo from "./src/components/QuackKingLogo.jsx";
-import HackerNewsModal from "./src/components/HackerNewsModal.jsx";
-import { useHackerNewsNotice } from "./src/hooks/useHackerNewsNotice.js";
+import ReferralModal from "./src/components/ReferralModal.jsx";
+import { useReferralNotice } from "./src/hooks/useReferralNotice.js";
 
 const TAGLINES = [
     "Are your friends as smart as they think they are?",
@@ -23,7 +23,7 @@ const LandingPage = () => {
         () => TAGLINES[Math.floor(Math.random() * TAGLINES.length)],
         []
     );
-    const { shouldShow, dismiss } = useHackerNewsNotice({ canShow: true });
+    const { source, shouldShow, dismiss } = useReferralNotice({ canShow: true });
 
     return (
         <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white overflow-hidden">
@@ -111,7 +111,7 @@ const LandingPage = () => {
                 </div>
             </div>
 
-            <HackerNewsModal isOpen={shouldShow} onClose={dismiss} />
+            <ReferralModal isOpen={shouldShow} onClose={dismiss} source={source} />
         </div>
     );
 };
